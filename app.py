@@ -12,8 +12,7 @@ from pydantic import BaseModel
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from google import genai
-
+import google.generativeai as genai
 # -----------------------------------------------------------------------
 # 0. 配置
 # -----------------------------------------------------------------------
