@@ -113,7 +113,87 @@
    ```
 
 5. **开始创作！**
-   在页面中输入一个主题（例如“冒泡排序”），然后等待结果生成。
+   在页面中输入一个主题（例如"冒泡排序"），然后等待结果生成。
+
+### Docker 方式运行
+
+如果您更喜欢使用 Docker，可以按照以下步骤：
+
+1. **确保 Docker 已安装:**
+   请确保您的系统已安装 Docker 和 docker-compose。
+
+2. **克隆代码仓库:**
+   ```bash
+   git clone https://github.com/fogsightai/fogsight.git
+   cd fogsight
+   ```
+
+3. **配置API密钥:**
+   ```bash
+   cp demo-credentials.json credentials.json
+   # 编辑 credentials.json 文件，填入您的 API_KEY、BASE_URL 和 MODEL
+   
+   # 使用 OpenRouter 的配置示例：
+   # {
+   #   "API_KEY": "sk-or-v1-您的OpenRouter密钥",
+   #   "BASE_URL": "https://openrouter.ai/api/v1",
+   #   "MODEL": "anthropic/claude-sonnet-4"
+   # }
+   
+   # 使用 Gemini 的配置示例：
+   # {
+   #   "API_KEY": "您的Gemini密钥",
+   #   "BASE_URL": "",
+   #   "MODEL": "gemini-2.5-pro"
+   # }
+   ```
+
+4. **使用 Docker Compose 启动:**
+   ```bash
+   # 使用默认端口 8000
+   docker-compose up -d
+   
+   # 或者指定自定义端口（例如 3000）
+   HOST_PORT=3000 docker-compose up -d
+   ```
+   
+   如果 Docker 镜像无法拉取，可以尝试使用代理，或者使用镜像的国内源。
+
+5. **访问应用:**
+   打开浏览器访问 `http://localhost:8000`（或您指定的端口）
+
+6. **停止服务:**
+   ```bash
+   docker-compose down
+   ```
+
+## OpenRouter 支持
+
+Fogsight 完全支持 OpenRouter，让您可以使用各种优秀的大语言模型：
+
+### 支持的模型示例：
+- **Anthropic Claude**: `anthropic/claude-3-sonnet-20240229`, `anthropic/claude-3-opus-20240229`
+- **OpenAI GPT**: `openai/gpt-4-turbo`, `openai/gpt-3.5-turbo`
+- **Google Gemini**: `google/gemini-pro-1.5`, `google/gemini-pro`
+- **Meta Llama**: `meta-llama/llama-3-70b-instruct`
+- **其他模型**: 访问 [OpenRouter Models](https://openrouter.ai/models) 查看完整列表
+
+### 配置方法：
+1. 在 [OpenRouter](https://openrouter.ai/) 注册并获取 API 密钥
+2. 编辑 `credentials.json`:
+   ```json
+   {
+     "API_KEY": "sk-or-v1-你的OpenRouter密钥",
+     "BASE_URL": "https://openrouter.ai/api/v1",
+     "MODEL": "anthropic/claude-3-sonnet-20240229"
+   }
+   ```
+3. 启动应用即可使用指定的模型
+
+### 优势：
+- 🌟 **多模型选择**: 一个接口访问多种顶级模型
+- 💰 **价格透明**: 通常比官方 API 更有竞争力
+- 🚀 **无缝切换**: 只需修改配置文件中的 MODEL 字段
 
 ## 联系我们/加入群聊
 

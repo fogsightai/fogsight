@@ -1,5 +1,6 @@
 import asyncio
 import json
+import os
 from datetime import datetime
 from typing import AsyncGenerator, List, Optional
 
@@ -22,12 +23,24 @@ shanghai_tz = pytz.timezone("Asia/Shanghai")
 credentials = json.load(open("credentials.json"))
 API_KEY = credentials["API_KEY"]
 BASE_URL = credentials.get("BASE_URL", "")
+MODEL = credentials.get("MODEL", "gemini-2.5-pro")
 
 if API_KEY.startswith("sk-"):
-    client = AsyncOpenAI(api_key=API_KEY, base_url=BASE_URL)
+    # 为 OpenRouter 添加应用标识
+    extra_headers = {}
+    if "openrouter.ai" in BASE_URL.lower():
+        extra_headers = {
+            "HTTP-Referer": "https://github.com/fogsightai/fogsight",
+            "X-Title": "Fogsight - AI Animation Generator"
+        }
+    
+    client = AsyncOpenAI(
+        api_key=API_KEY, 
+        base_url=BASE_URL,
+        default_headers=extra_headers
+    )
     USE_GEMINI = False
 else:
-    import os
     os.environ["GEMINI_API_KEY"] = API_KEY
     gemini_client = genai.Client()
     USE_GEMINI = True
@@ -60,9 +73,13 @@ class ChatRequest(BaseModel):
 async def llm_event_stream(
     topic: str,
     history: Optional[List[dict]] = None,
-    model: str = "gemini-2.5-pro", # Changed model for better performance if needed
+    model: str = None, # Will use MODEL from config if not specified
 ) -> AsyncGenerator[str, None]:
     history = history or []
+    
+    # Use configured model if not specified
+    if model is None:
+        model = MODEL
     
     # The system prompt is now more focused
     system_prompt = f"""请你生成一个非常精美的动态动画,讲讲 {topic}
@@ -84,7 +101,7 @@ html+css+js+svg，放进一个html里"""
             response = await asyncio.get_event_loop().run_in_executor(
                 None, 
                 lambda: gemini_client.models.generate_content(
-                    model="gemini-2.0-flash-exp", 
+                    model=model, 
                     contents=full_prompt
                 )
             )
