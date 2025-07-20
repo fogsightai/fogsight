@@ -1,0 +1,15 @@
+[project]
+name = "fogsight"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.116.1",
+    "google-genai>=1.26.0",
+    "jinja2>=3.1.6",
+    "openai>=1.97.0",
+    "pydantic>=2.11.7",
+    "pytz>=2025.2",
+    "uvicorn>=0.35.0",
+]
