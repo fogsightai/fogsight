@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  fogsight:
+    build: .
+    ports:
+      - "${HOST_PORT:-8000}:8000"
+    volumes:
+      - ./credentials.json:/app/credentials.json:ro
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

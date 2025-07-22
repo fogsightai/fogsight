@@ -5,3 +5,4 @@ openai
 jinja2
 pytz
 google-genai
+requests
