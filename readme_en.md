@@ -217,7 +217,9 @@ Join the discussion via **[this link](https://fogsightai.feishu.cn/wiki/WvODwyUr
 
 ## License
 
-This project is released under the **MIT License**.
-If you cite this project with attribution and a link back, we’ll be very grateful 😊.
+This project is released under the **Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License (CC BY-NC-ND 4.0)**.
+
+You may share this project with proper attribution, but you may not use it for commercial purposes or distribute modified versions without explicit permission.  
+For commercial licensing, please contact the author.
 
 *Fogsight is part of the WaytoAGI open‑source programme — empowering more people through AI.*
