@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
             submitButton.classList.add('disabled');
         }
         accumulatedCode = '';
-        let inCodeBlock = false;
+        let fullResponse = "";
         let codeBlockElement = null;
 
         try {
@@ -113,80 +113,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-            let buffer = '';
-
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-
-                buffer += decoder.decode(value, { stream: true });
-                const lines = buffer.split('\n\n');
-                buffer = lines.pop();
-
-                for (const line of lines) {
-                    if (!line.startsWith('data: ')) continue;
-
-                    const jsonStr = line.substring(6);
-                    if (jsonStr.includes('[DONE]')) {
-                        console.log('Streaming complete');
-                        conversationHistory.push({ role: 'assistant', content: accumulatedCode });
-
-                        if (!codeBlockElement) {
-                            console.warn('No code block element created. Full response:', accumulatedCode);
-                            throw new LLMParseError('LLM did not return a complete code block.');
-                        }
-
-                        if (!isHtmlContentValid(accumulatedCode)) {
-                            console.warn('Invalid HTML received:\n', accumulatedCode);
-                            throw new LLMParseError('Invalid HTML content received.');
-                        }
-
-                        markCodeAsComplete(codeBlockElement);
-
-                        try {
-                            if (accumulatedCode) {
-                                appendAnimationPlayer(accumulatedCode, topic);
-                            }
-                        } catch (err) {
-                            console.error('appendAnimationPlayer failed:', err);
-                            throw new LLMParseError('Animation rendering failed.');
-                        }
-                        scrollToBottom();
-                        return;
-                    }
-
-                    let data;
-                    try {
-                        data = JSON.parse(jsonStr);
-                    } catch (err) {
-                        console.error('Failed to parse JSON:', jsonStr);
-                        throw new LLMParseError('Invalid response format from server.');
-                    }
-
-                    if (data.error) {
-                        throw new LLMParseError(data.error);
-                    }
-                    const token = data.token || '';
-
-                    if (!inCodeBlock && token.includes('```')) {
-                        inCodeBlock = true;
-                        if (agentThinkingMessage) agentThinkingMessage.remove();
-                        codeBlockElement = appendCodeBlock();
-                        const contentAfterMarker = token.substring(token.indexOf('```') + 3).replace(/^html\n/, '');
-                        updateCodeBlock(codeBlockElement, contentAfterMarker);
-                    } else if (inCodeBlock) {
-                        if (token.includes('```')) {
-                            inCodeBlock = false;
-                            const contentBeforeMarker = token.substring(0, token.indexOf('```'));
-                            updateCodeBlock(codeBlockElement, contentBeforeMarker);
-                        } else {
-                            updateCodeBlock(codeBlockElement, token);
-                        }
-                    }
+            await FogsightGeneration.consumeStream(response.body.getReader(), token => {
+                fullResponse += token;
+                if (!codeBlockElement) {
+                    agentThinkingMessage?.remove();
+                    codeBlockElement = appendCodeBlock();
                 }
+                updateCodeBlock(codeBlockElement, token);
+            });
+
+            const html = FogsightGeneration.extractHtml(fullResponse);
+            if (!html || !isHtmlContentValid(html)) {
+                throw new LLMParseError('LLM did not return a complete HTML document.');
             }
+            accumulatedCode = html;
+            codeBlockElement.querySelector('code').textContent = html;
+            appendAnimationPlayer(html, topic);
+            markCodeAsComplete(codeBlockElement);
+            conversationHistory.push({ role: 'assistant', content: html });
+            scrollToBottom();
         } catch (error) {
             console.error("Streaming failed:", error);
             if (agentThinkingMessage) agentThinkingMessage.remove();
@@ -303,8 +248,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
 
-        // 可选：检测是否有 <html><body> 结构或是否为空
-        if (!doc.body || doc.body.innerHTML.trim() === "") {
+        // DOMParser repairs text and malformed markup; require renderable body markup.
+        if (!doc.body || !Array.from(doc.body.children).some(el => !['SCRIPT', 'STYLE', 'LINK', 'META'].includes(el.tagName))) {
             console.warn("HTML 内容为空");
             return false;
         }
