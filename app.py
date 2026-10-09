@@ -100,12 +100,15 @@ html+css+js+svg，放进一个html里"""
                 history_text = "\n".join([f"{msg['role']}: {msg['content']}" for msg in history])
                 full_prompt = history_text + "\n\n" + full_prompt
             
-            response = await asyncio.get_event_loop().run_in_executor(
-                None, 
-                lambda: gemini_client.models.generate_content(
-                    model=model, 
-                    contents=full_prompt
-                )
+            response = await asyncio.wait_for(
+                asyncio.get_event_loop().run_in_executor(
+                    None, 
+                    lambda: gemini_client.models.generate_content(
+                        model=model, 
+                        contents=full_prompt
+                    )
+                ),
+                timeout=60.0
             )
             
             text = response.text
@@ -128,13 +131,16 @@ html+css+js+svg，放进一个html里"""
         ]
 
         try:
-            response = await client.chat.completions.create(
-                model=model,
-                messages=messages,
-                stream=True,
-                temperature=0.8, 
+            response = await asyncio.wait_for(
+                client.chat.completions.create(
+                    model=model,
+                    messages=messages,
+                    stream=True,
+                    temperature=0.8, 
+                ),
+                timeout=60.0
             )
-        except OpenAIError as e:
+        except (OpenAIError, asyncio.TimeoutError) as e:
             yield f"data: {json.dumps({'error': str(e)})}\n\n"
             return
 
