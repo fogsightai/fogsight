@@ -1,0 +1,7 @@
+{
+  "name": "fogsight-regression-tests",
+  "private": true,
+  "scripts": {"test": "node --test tests/*.test.cjs"},
+  "devDependencies": {"jsdom": "30.1.2"},
+  "engines": {"node": "^22.22.2 || ^24.15.0 || >=26.0.0"}
+}

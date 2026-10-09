@@ -215,3 +215,6 @@ __MACOSX/
 **/Thumbs.db
 **/ehthumbs.db
 credentials.json
+
+# JavaScript regression-test dependencies
+node_modules/

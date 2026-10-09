@@ -91,7 +91,7 @@ async def llm_event_stream(
 不需要任何互动按钮,直接开始播放
 使用和谐好看，广泛采用的浅色配色方案，使用很多的，丰富的视觉元素。双语字幕
 **请保证任何一个元素都在一个2k分辨率的容器中被摆在了正确的位置，避免穿模，字幕遮挡，图形位置错误等等问题影响正确的视觉传达**
-html+css+js+svg，放进一个html里"""
+html+css+js+svg，放进一个html里。直接只输出完整 HTML 文档，包含 <html> 和 <body> 及其闭合标签，不要附带总结或解释。"""
 
     if USE_GEMINI:
         try:
@@ -138,12 +138,26 @@ html+css+js+svg，放进一个html里"""
             yield f"data: {json.dumps({'error': str(e)})}\n\n"
             return
 
-        async for chunk in response:
-            token = chunk.choices[0].delta.content or ""
-            if token:
+        try:
+            async for chunk in response:
+                # Usage/role/finish metadata may carry no choices or content.
+                if getattr(chunk, "error", None):
+                    raise ValueError(str(chunk.error))
+                choices = getattr(chunk, "choices", None)
+                if not choices:
+                    continue
+                delta = getattr(choices[0], "delta", None)
+                token = getattr(delta, "content", None)
+                if token is None or token == "":
+                    continue
+                if not isinstance(token, str):
+                    raise ValueError("Invalid streaming content type")
                 payload = json.dumps({"token": token}, ensure_ascii=False)
                 yield f"data: {payload}\n\n"
                 await asyncio.sleep(0.001)
+        except Exception as e:
+            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+            return
 
     yield 'data: {"event":"[DONE]"}\n\n'
 
