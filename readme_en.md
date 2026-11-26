@@ -6,6 +6,14 @@
        width="300">
 </p>
 
+## Maintenance announcement
+
+Published on November 26, 2026.
+
+[Floatboat](https://floatboat.ai) has taken over full maintenance of Fogsight. You are welcome to try it, download it, and run it locally.
+
+We are also introducing [Explainer Video Generator](https://explainervideogenerator.com/), the successor to Fogsight. This new video generation website supports creating videos with Opus. We are preparing the source code for an open-source release, coming soon. Try it today.
+
 **Fogsight is an animation‑generation agent powered by large‑language models (LLMs).  
 Give it an abstract concept or a single word and it will transform it into a high‑quality, vivid animation.**
 
@@ -184,9 +192,25 @@ Fogsight fully supports OpenRouter, allowing you to use various excellent large 
 - 🚀 **Seamless Switching**: Just modify the MODEL field in the configuration file
 ## Contact / Community
 
-Join the discussion via **[this link](https://fogsightai.feishu.cn/wiki/WvODwyUr1iSAe0kEyKfcpqvynGc?from=from_copylink)**.
+Scan either QR code below to join our community and get in touch.
+
+### Feishu community
+
+<img src="./docs/images/community-feishu.png" alt="Feishu community QR code" width="306">
+
+### WeChat community
+
+<img src="./docs/images/community-wechat.png" alt="Fogsight and Friends group 8 WeChat QR code" width="400">
+
+The WeChat QR code is valid before December 3, 2026, as indicated in the image.
 
 ## Contributors
+
+* [@redreamality](https://redreamality.com) from [Floatboat](https://floatboat.ai)
+
+## Acknowledgements
+
+Thank you to the following contributors for their work on Fogsight's early development and community.
 
 ### Academia
 

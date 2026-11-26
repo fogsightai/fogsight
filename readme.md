@@ -9,6 +9,14 @@
 
 
 
+## 维护公告
+
+发布日期：2026 年 11 月 26 日
+
+雾象现已全面由 [Floatboat](https://floatboat.ai) 接管和维护。欢迎大家试用、下载并在本地运行。
+
+我们同时宣布推出雾象的继任项目：[Explainer Video Generator](https://explainervideogenerator.com/)。这是一个全新的视频生成网站，支持使用 Opus 制作视频。开源代码正在整理，即将发布，欢迎试用。
+
 **雾象是一款由大型语言模型（LLM）驱动的动画引擎 agent 。用户输入抽象概念或词语，雾象会将其转化为高水平的生动动画。**
 
 将雾象部署在本地后，您只需输入词语，点击生成，便可得到动画。
@@ -172,9 +180,25 @@
 
 ## 联系我们/加入群聊
 
-请访问[此链接](https://fogsightai.feishu.cn/wiki/WvODwyUr1iSAe0kEyKfcpqvynGc?from=from_copylink)联系我们或加入交流群。
+欢迎扫描下方二维码加入交流群，与我们交流。
+
+### 飞书交流群
+
+<img src="./docs/images/community-feishu.png" alt="飞书交流群二维码" width="306">
+
+### 微信交流群
+
+<img src="./docs/images/community-wechat.png" alt="雾象和他的朋友们 8 群微信二维码" width="400">
+
+微信二维码有效期以图片标注为准：2026 年 12 月 3 日前有效。
 
 ## Contributors
+
+* [@redreamality](https://redreamality.com) from [Floatboat](https://floatboat.ai)
+
+## Acknowledgements
+
+感谢以下贡献者为雾象早期开发和社区建设所作的贡献。
 
 ### 高校
 
